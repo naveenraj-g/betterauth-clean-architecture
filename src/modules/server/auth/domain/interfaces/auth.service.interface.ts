@@ -1,5 +1,8 @@
-import { TSignupEmailSchema } from "@/modules/shared/entities/schema/auth/signup.schema";
+import {
+  TSignupResponse,
+  TSignupEmailSchema,
+} from "@/modules/shared/entities/schema/auth/auth.schema";
 
 export interface IAuthService {
-  emailSignup(payload: TSignupEmailSchema): Promise<any>;
+  emailSignup(payload: TSignupEmailSchema): Promise<TSignupResponse>;
 }

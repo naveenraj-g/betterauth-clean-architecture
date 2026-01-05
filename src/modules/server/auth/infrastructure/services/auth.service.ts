@@ -1,10 +1,14 @@
-import { TSignupEmailSchema } from "@/modules/shared/entities/schema/auth/signup.schema";
+import {
+  SignupResponseSchema,
+  TSignupResponse,
+  TSignupEmailSchema,
+} from "@/modules/shared/entities/schema/auth/auth.schema";
 import { auth } from "../../../auth-provider/auth";
 import { IAuthService } from "../../domain/interfaces";
 import { mapBetterAuthError } from "@/modules/server/shared/errors/mappers/mapBetterAuthError";
 
 export class AuthService implements IAuthService {
-  async emailSignup(payload: TSignupEmailSchema): Promise<any> {
+  async emailSignup(payload: TSignupEmailSchema): Promise<TSignupResponse> {
     const { email, name, password } = payload;
 
     try {
@@ -17,7 +21,7 @@ export class AuthService implements IAuthService {
         },
       });
 
-      return res;
+      return await SignupResponseSchema.parseAsync(res);
     } catch (error) {
       console.log(error);
       mapBetterAuthError(error, "Failed to sign up user");

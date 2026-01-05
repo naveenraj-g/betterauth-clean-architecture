@@ -1,4 +1,4 @@
-import { TSignupValidationSchema } from "@/modules/shared/entities/schema/auth/signup.schema";
+import { TSignupValidationSchema } from "@/modules/shared/entities/schema/auth/auth.schema";
 import { getAuthInjection } from "../../../di/container";
 
 export async function signupUseCase(payload: TSignupValidationSchema) {

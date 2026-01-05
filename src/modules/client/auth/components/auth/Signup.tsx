@@ -4,9 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  signupSchema,
+  SignupSchema,
   TSignupSchema,
-} from "@/modules/shared/entities/schema/auth/signup.schema";
+} from "@/modules/shared/entities/schema/auth/auth.schema";
 import {
   Field,
   FieldDescription,
@@ -35,7 +35,7 @@ function Signup() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const form = useForm<TSignupSchema>({
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(SignupSchema),
     defaultValues: {
       name: "",
       email: "",

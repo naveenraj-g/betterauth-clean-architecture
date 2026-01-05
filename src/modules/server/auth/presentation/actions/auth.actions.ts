@@ -4,14 +4,24 @@ import {
   InputParseError,
   OutputParseError,
 } from "@/modules/shared/entities/errors/schemaParseError";
-import { signupValidationSchema } from "@/modules/shared/entities/schema/auth/signup.schema";
+import { SignupValidationSchema } from "@/modules/shared/entities/schema/auth/auth.schema";
 import { createServerAction, ZSAError } from "zsa";
-import { signupController } from "../controller/auth";
+import {
+  signupController,
+  TSignupControllerOutput,
+} from "../../interface-adapters/controllers/auth/index";
 import { ApplicationError } from "@/modules/server/shared/errors/applicationError";
 
+/**
+ * Server action acting as a transport layer between client and server.
+ * Input validation and business logic are delegated to controllers and use cases.
+ */
+
+// Server actions act as a transport layer only.
+// Input validation is handled in controllers to preserve clean architecture boundaries.
 export const signupAction = createServerAction()
-  .input(signupValidationSchema, { skipInputParsing: true })
-  .handler(async ({ input }) => {
+  .input(SignupValidationSchema, { skipInputParsing: true })
+  .handler(async ({ input }): Promise<TSignupControllerOutput> => {
     try {
       return await signupController(input);
     } catch (error) {

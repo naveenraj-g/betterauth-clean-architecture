@@ -9,7 +9,7 @@
     "lint": "eslint",
     "db:generate": "npx prisma generate --schema ./src/modules/server/prisma/schema/schema.prisma",
     "db:push": "npx prisma db push --schema ./src/modules/server/prisma/schema/schema.prisma",
-    "db:studio": "npx prisma studio --config ./prisma.config.ts",
+    "db:studio": "npx prisma studio --schema ./src/modules/server/prisma/schema/schema.prisma",
     "auth:generate": "npx @better-auth/cli generate --config ./src/modules/server/betterauth/auth.ts --output ./src/modules/server/prisma/schema/schema.prisma"
   },
   "dependencies": {
