@@ -1,5 +1,5 @@
 import { TSignupEmailSchema } from "@/modules/shared/entities/schema/auth/signup.schema";
-import { auth } from "../../../betterauth/auth";
+import { auth } from "../../../auth-provider/auth";
 import { IAuthService } from "../../domain/interfaces";
 import { mapBetterAuthError } from "@/modules/server/shared/errors/mappers/mapBetterAuthError";
 
