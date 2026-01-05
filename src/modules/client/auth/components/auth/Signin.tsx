@@ -4,8 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  SignupSchema,
-  TSignupSchema,
+  SigninFormSchema,
+  TSigninFormSchema,
 } from "@/modules/shared/entities/schema/auth/auth.schema";
 import {
   Field,
@@ -27,30 +27,29 @@ import {
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useServerAction } from "zsa-react";
-import { signupAction } from "@/modules/server/auth/presentation/actions/auth.actions";
+import { signinAction } from "@/modules/server/auth/presentation/actions/auth.actions";
 import { toast } from "sonner";
 import { handleZSAError } from "@/modules/client/shared/error/handleZSAError";
 
 function Signin() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const form = useForm<TSignupSchema>({
-    resolver: zodResolver(SignupSchema),
+  const form = useForm<TSigninFormSchema>({
+    resolver: zodResolver(SigninFormSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
     },
   });
   const { isSubmitting } = form.formState;
 
-  const { execute } = useServerAction(signupAction, {
+  const { execute } = useServerAction(signinAction, {
     onSuccess: ({ data }) => {
       console.log(data);
       toast.success("Signup successful");
     },
     onError: ({ err }) => {
-      handleZSAError<TSignupSchema>({
+      handleZSAError<TSigninFormSchema>({
         err,
         form,
         fallbackMessage: "Signup failed",
@@ -62,41 +61,22 @@ function Signin() {
     setIsPasswordVisible((prev) => !prev);
   }
 
-  async function handleSignup(values: TSignupSchema) {
-    await execute(values);
+  async function handleSignin(values: TSigninFormSchema) {
+    await execute({
+      payload: values,
+    });
   }
 
   return (
     <Card>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSignup)}>
+          <form onSubmit={form.handleSubmit(handleSignin)}>
             <FieldGroup>
               <FieldSet>
                 <FieldLegend>Sign In</FieldLegend>
                 <FieldDescription>Signin to your account</FieldDescription>
                 <FieldGroup>
-                  {/* name */}
-                  <Controller
-                    control={form.control}
-                    name="name"
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="name">Name</FieldLabel>
-                        <Input
-                          {...field}
-                          id="name"
-                          aria-invalid={fieldState.invalid}
-                          placeholder="Enter your name"
-                          autoComplete="off"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-
                   {/* email */}
                   <Controller
                     control={form.control}

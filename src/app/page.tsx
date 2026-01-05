@@ -17,9 +17,7 @@ export default function Home() {
         {session ? (
           <>
             <div className="text-2xl">Welcome {session.user.name}</div>
-            <Button asChild>
-              <Link href="/auth/logout">Logout</Link>
-            </Button>
+            <Button variant="destructive">Sign Out</Button>
           </>
         ) : (
           <>

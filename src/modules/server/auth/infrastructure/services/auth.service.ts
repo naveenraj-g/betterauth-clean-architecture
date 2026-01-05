@@ -2,6 +2,9 @@ import {
   SignupResponseSchema,
   TSignupResponse,
   TSignupEmailSchema,
+  TSigninEmailSchema,
+  TSigninResponse,
+  SigninResponseSchema,
 } from "@/modules/shared/entities/schema/auth/auth.schema";
 import { auth } from "../../../auth-provider/auth";
 import { IAuthService } from "../../domain/interfaces";
@@ -23,23 +26,26 @@ export class AuthService implements IAuthService {
 
       return await SignupResponseSchema.parseAsync(res);
     } catch (error) {
-      console.log(error);
       mapBetterAuthError(error, "Failed to sign up user");
     }
   }
-}
 
-/*
-{
-    "token": "OiKcUjA2lSlrl3Xd0pKYvLcRjCO7UOOP",
-    "user": {
-        "name": "test",
-        "email": "testuser.gnr@gmail.com",
-        "emailVerified": false,
-        "image": null,
-        "createdAt": "2026-01-05T00:53:27.415Z",
-        "updatedAt": "2026-01-05T00:53:27.415Z",
-        "id": "CxwoWFq6PPJ57IXeqp2uTl2gRLtt2ATn"
+  async emailSignin(payload: TSigninEmailSchema): Promise<TSigninResponse> {
+    const { email, password, rememberMe } = payload;
+
+    try {
+      const res = await auth.api.signInEmail({
+        body: {
+          email,
+          password,
+          rememberMe,
+          callbackURL: "/",
+        },
+      });
+
+      return await SigninResponseSchema.parseAsync(res);
+    } catch (error) {
+      mapBetterAuthError(error, "Failed to sign in user");
     }
+  }
 }
-*/

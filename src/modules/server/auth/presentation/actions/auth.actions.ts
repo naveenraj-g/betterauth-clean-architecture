@@ -1,16 +1,17 @@
 "use server";
 
 import {
-  InputParseError,
-  OutputParseError,
-} from "@/modules/shared/entities/errors/schemaParseError";
-import { SignupValidationSchema } from "@/modules/shared/entities/schema/auth/auth.schema";
-import { createServerAction, ZSAError } from "zsa";
+  SigninActionSchema,
+  SignupActionSchema,
+} from "@/modules/shared/entities/schema/auth/auth.schema";
+import { createServerAction } from "zsa";
 import {
+  signinController,
   signupController,
+  TSigninControllerOutput,
   TSignupControllerOutput,
 } from "../../interface-adapters/controllers/auth/index";
-import { ApplicationError } from "@/modules/server/shared/errors/applicationError";
+import { runWithTransport } from "@/modules/server/transport/runWithTransport";
 
 /**
  * Server action acting as a transport layer between client and server.
@@ -20,69 +21,32 @@ import { ApplicationError } from "@/modules/server/shared/errors/applicationErro
 // Server actions act as a transport layer only.
 // Input validation is handled in controllers to preserve clean architecture boundaries.
 export const signupAction = createServerAction()
-  .input(SignupValidationSchema, { skipInputParsing: true })
-  .handler(async ({ input }): Promise<TSignupControllerOutput> => {
-    try {
-      return await signupController(input);
-    } catch (error) {
-      /**
-       * IMPORTANT:
-       * The Server Action is the serialization boundary.
-       *
-       * Any value returned or thrown from here (even to Server Components)
-       * goes through the React Server Components (RSC) transport pipeline.
-       *
-       * ZSA aligns with React's rules:
-       * - Server Components are NOT "local Node code"
-       * - They are transport consumers via React Flight
-       * - Therefore, all data must be serializable
-       *
-       * Inside controllers/usecases (before this boundary),
-       * custom error classes retain full structure and prototypes.
-       */
+  .input(SignupActionSchema, { skipInputParsing: true })
+  .handler(async ({ input }) => {
+    return await runWithTransport<TSignupControllerOutput>(async () => {
+      const data = await signupController(input.payload);
 
-      // User-fixable validation error
-      if (error instanceof InputParseError) {
-        /**
-         * ❌ INVALID (ZSAError only accepts (code, data)):
-         *
-         * throw new ZSAError("INPUT_PARSE_ERROR", error.message, {
-         *   inputParseErrors: {...}
-         * });
-         *
-         * ✅ CORRECT:
-         * Pass ONE object as the second argument.
-         * ZSA will serialize it and expose it as `err.data` on the consumer.
-         */
-        throw new ZSAError("INPUT_PARSE_ERROR", {
-          inputParseErrors: {
-            fieldErrors: error.fieldErrors,
-            formErrors: error.formErrors,
-            formattedErrors: error.formattedErrors,
-          },
-        });
-      }
+      return {
+        result: data,
+        transport: input.transportOptions,
+      };
+    });
+  });
 
-      // Internal-only error (log on server, hide details from user)
-      if (error instanceof OutputParseError) {
-        // Log here if needed
-        throw new ZSAError(
-          "OUTPUT_PARSE_ERROR",
-          "Something went wrong. Please try again later."
-        );
-      }
+export const signinAction = createServerAction()
+  .input(SigninActionSchema, { skipInputParsing: true })
+  .handler(async ({ input }) => {
+    return await runWithTransport<TSigninControllerOutput>(async () => {
+      const data = await signinController(input.payload);
 
-      if (error instanceof ApplicationError) {
-        if (!error.isOperational) {
-          console.error(error);
-        }
-        throw new ZSAError("ERROR", error.message);
-      }
-
-      if (error instanceof Error) {
-        throw new ZSAError("ERROR", error.message);
-      }
-
-      throw new ZSAError("INTERNAL_SERVER_ERROR", "Something went wrong");
-    }
+      return {
+        result: data,
+        transport: {
+          ...input.transportOptions,
+          url: data.url ?? input.transportOptions?.url,
+          shouldRedirect:
+            data.redirect ?? input.transportOptions?.shouldRedirect,
+        },
+      };
+    });
   });

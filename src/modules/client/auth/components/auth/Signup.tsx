@@ -4,8 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  SignupSchema,
-  TSignupSchema,
+  SignupFormSchema,
+  TSignupFormSchema,
 } from "@/modules/shared/entities/schema/auth/auth.schema";
 import {
   Field,
@@ -34,8 +34,8 @@ import { handleZSAError } from "@/modules/client/shared/error/handleZSAError";
 function Signup() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const form = useForm<TSignupSchema>({
-    resolver: zodResolver(SignupSchema),
+  const form = useForm<TSignupFormSchema>({
+    resolver: zodResolver(SignupFormSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -50,7 +50,7 @@ function Signup() {
       toast.success("Signup successful");
     },
     onError: ({ err }) => {
-      handleZSAError<TSignupSchema>({
+      handleZSAError<TSignupFormSchema>({
         err,
         form,
         fallbackMessage: "Signup failed",
@@ -62,8 +62,8 @@ function Signup() {
     setIsPasswordVisible((prev) => !prev);
   }
 
-  async function handleSignup(values: TSignupSchema) {
-    await execute(values);
+  async function handleSignup(values: TSignupFormSchema) {
+    await execute({ payload: values });
   }
 
   return (

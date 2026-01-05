@@ -1,7 +1,8 @@
 import z from "zod";
+import { TransportOptions } from "../transportOptions.schema";
 
 // Reusable/base schemas
-export const BaseSigninOrSgnupSchema = z.object({
+export const BaseSigninOrSignupSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email(),
   password: z.string().min(1, "Password is required"),
@@ -20,22 +21,52 @@ export const UserSchema = z.object({
 // ------------------------------------------------------- //
 
 // form schemas (used in client side forms)
-export const SignupSchema = BaseSigninOrSgnupSchema.pick({
+export const SignupFormSchema = BaseSigninOrSignupSchema.pick({
   name: true,
   email: true,
   password: true,
 });
-export type TSignupSchema = z.infer<typeof SignupSchema>;
+export type TSignupFormSchema = z.infer<typeof SignupFormSchema>;
+
+export const SigninFormSchema = BaseSigninOrSignupSchema.pick({
+  email: true,
+  password: true,
+}).extend({
+  rememberMe: z.boolean().optional(),
+});
+export type TSigninFormSchema = z.infer<typeof SigninFormSchema>;
 
 // ------------------------------------------------------- //
 
 // validation schemas (used in server actions and controllers)
-export const SignupValidationSchema = BaseSigninOrSgnupSchema.pick({
+export const SignupValidationSchema = BaseSigninOrSignupSchema.pick({
   name: true,
   email: true,
   password: true,
 });
 export type TSignupValidationSchema = z.infer<typeof SignupValidationSchema>;
+
+export const SigninValidationSchema = BaseSigninOrSignupSchema.pick({
+  email: true,
+  password: true,
+}).extend({
+  rememberMe: z.boolean().optional(),
+});
+export type TSigninValidationSchema = z.infer<typeof SigninValidationSchema>;
+
+// ------------------------------------------------------- //
+
+export const SignupActionSchema = z.object({
+  payload: SignupValidationSchema,
+  transportOptions: TransportOptions.optional(),
+});
+export type TSignupActionSchema = z.infer<typeof SignupActionSchema>;
+
+export const SigninActionSchema = z.object({
+  payload: SigninValidationSchema,
+  transportOptions: TransportOptions.optional(),
+});
+export type TSigninActionSchema = z.infer<typeof SigninActionSchema>;
 
 // ------------------------------------------------------- //
 
@@ -43,12 +74,20 @@ export type TSignupValidationSchema = z.infer<typeof SignupValidationSchema>;
 // payloads
 
 // Signup with email
-export const signupEmailSchema = BaseSigninOrSgnupSchema.pick({
+export const SignupEmailSchema = BaseSigninOrSignupSchema.pick({
   name: true,
   email: true,
   password: true,
 });
-export type TSignupEmailSchema = z.infer<typeof signupEmailSchema>;
+export type TSignupEmailSchema = z.infer<typeof SignupEmailSchema>;
+
+export const SigninEmailSchema = BaseSigninOrSignupSchema.pick({
+  email: true,
+  password: true,
+}).extend({
+  rememberMe: z.boolean().optional(),
+});
+export type TSigninEmailSchema = z.infer<typeof SigninEmailSchema>;
 
 // ------------------------------------------------------- //
 
@@ -66,3 +105,12 @@ export const SignupResponseSchema = z.union([
   }),
 ]);
 export type TSignupResponse = z.infer<typeof SignupResponseSchema>;
+
+export const SigninResponseSchema = z.object({
+  redirect: z.boolean(),
+  token: z.string(),
+  url: z.string().optional(),
+  user: UserSchema,
+});
+
+export type TSigninResponse = z.infer<typeof SigninResponseSchema>;
