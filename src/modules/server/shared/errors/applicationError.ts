@@ -28,6 +28,10 @@ export class ApplicationError extends Error {
       (this as any).cause = options.cause;
     }
 
+    // Capture a clean stack trace starting from the call site where this error
+    // was created, not from inside the error class constructor itself.
+    // This makes logs show where the error actually originated and how it
+    // propagated through the application layers.
     Error.captureStackTrace(this, this.constructor);
   }
 }

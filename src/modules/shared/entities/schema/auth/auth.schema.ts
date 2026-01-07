@@ -68,6 +68,11 @@ export const SigninActionSchema = z.object({
 });
 export type TSigninActionSchema = z.infer<typeof SigninActionSchema>;
 
+export const SignoutActionSchema = z.object({
+  transportOptions: TransportOptions.optional(),
+});
+export type TSignoutActionSchema = z.infer<typeof SignoutActionSchema>;
+
 // ------------------------------------------------------- //
 
 // backend schemas (used in class methods)
@@ -94,7 +99,7 @@ export type TSigninEmailSchema = z.infer<typeof SigninEmailSchema>;
 // return DTO validator
 
 /** Signup with email Response schema */
-export const SignupResponseSchema = z.union([
+export const SignupResponseDtoSchema = z.union([
   z.object({
     token: z.null(),
     user: UserSchema,
@@ -104,13 +109,18 @@ export const SignupResponseSchema = z.union([
     user: UserSchema,
   }),
 ]);
-export type TSignupResponse = z.infer<typeof SignupResponseSchema>;
+export type TSignupResponseDto = z.infer<typeof SignupResponseDtoSchema>;
 
-export const SigninResponseSchema = z.object({
+export const SigninResponseDtoSchema = z.object({
   redirect: z.boolean(),
   token: z.string(),
   url: z.string().optional(),
   user: UserSchema,
 });
+export type TSigninResponseDto = z.infer<typeof SigninResponseDtoSchema>;
 
-export type TSigninResponse = z.infer<typeof SigninResponseSchema>;
+export const SignoutResponseDtoSchema = z.object({
+  success: z.boolean(),
+  url: z.string().nullable(),
+});
+export type TSignoutResponseDto = z.infer<typeof SignoutResponseDtoSchema>;

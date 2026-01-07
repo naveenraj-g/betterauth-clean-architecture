@@ -9,7 +9,8 @@ import { ApplicationError } from "../applicationError";
 
 function isNextJsControlError(error: any) {
   return (
-    error?.digest === "NEXT_REDIRECT" || error?.digest === "NEXT_NOT_FOUND"
+    (error?.digest as string).includes("NEXT_REDIRECT") ||
+    (error?.digest as string).includes("NEXT_NOT_FOUND")
   );
 }
 

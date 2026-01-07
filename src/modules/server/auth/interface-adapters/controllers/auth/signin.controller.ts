@@ -1,13 +1,13 @@
 import { InputParseError } from "@/modules/shared/entities/errors/schemaParseError";
 import {
   SigninValidationSchema,
-  TSigninResponse,
+  TSigninResponseDto,
 } from "@/modules/shared/entities/schema/auth/auth.schema";
 import { signinUseCase } from "../../../application/usecases/auth/signin.usecase";
 
 // Use an inline presenter for simple output mapping.
 // Extract a dedicated presenter when presentation logic grows in complexity.
-function presenter(data: TSigninResponse) {
+function presenter(data: TSigninResponseDto) {
   return data;
 }
 

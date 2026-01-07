@@ -3,6 +3,8 @@ import {
   UserAlreadyExistsError,
   EmailNotVerifiedError,
   SessionExpiredError,
+  AccountNotFoundError,
+  PasswordPolicyError,
 } from "../auth/commonAuthErrors";
 import { InfrastructureError } from "../infrastructureError";
 
@@ -26,6 +28,8 @@ export function mapBetterAuthError(
     case "INVALID_USER":
     case "CREDENTIAL_ACCOUNT_NOT_FOUND":
     case "VALIDATION_ERROR":
+    case "MISSING_FIELD":
+    case "FIELD_NOT_ALLOWED":
       throw new InvalidCredentialsError();
 
     case "USER_ALREADY_EXISTS":
@@ -34,10 +38,22 @@ export function mapBetterAuthError(
     case "SOCIAL_ACCOUNT_ALREADY_LINKED":
       throw new UserAlreadyExistsError();
 
+    case "USER_NOT_FOUND":
+    case "ACCOUNT_NOT_FOUND":
+    case "USER_EMAIL_NOT_FOUND":
+    case "EMAIL_MISMATCH":
+      throw new AccountNotFoundError();
+
     case "EMAIL_NOT_VERIFIED":
     case "EMAIL_ALREADY_VERIFIED":
     case "VERIFICATION_EMAIL_NOT_ENABLED":
       throw new EmailNotVerifiedError();
+
+    // Password policy
+    case "PASSWORD_TOO_SHORT":
+    case "PASSWORD_TOO_LONG":
+    case "USER_ALREADY_HAS_PASSWORD":
+      throw new PasswordPolicyError();
 
     case "SESSION_EXPIRED":
     case "SESSION_NOT_FRESH":

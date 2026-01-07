@@ -2,13 +2,16 @@
 
 import {
   SigninActionSchema,
+  SignoutActionSchema,
   SignupActionSchema,
 } from "@/modules/shared/entities/schema/auth/auth.schema";
 import { createServerAction } from "zsa";
 import {
   signinController,
+  signoutController,
   signupController,
   TSigninControllerOutput,
+  TSignoutControllerOutput,
   TSignupControllerOutput,
 } from "../../interface-adapters/controllers/auth/index";
 import { runWithTransport } from "@/modules/server/transport/runWithTransport";
@@ -46,6 +49,24 @@ export const signinAction = createServerAction()
           url: data.url ?? input.transportOptions?.url,
           shouldRedirect:
             data.redirect ?? input.transportOptions?.shouldRedirect,
+        },
+      };
+    });
+  });
+
+export const signoutAction = createServerAction()
+  .input(SignoutActionSchema, { skipInputParsing: true })
+  .handler(async ({ input }) => {
+    return await runWithTransport<TSignoutControllerOutput>(async () => {
+      const data = await signoutController();
+
+      return {
+        result: data,
+        transport: {
+          ...input.transportOptions,
+          url: data.url ?? input.transportOptions?.url,
+          shouldRedirect:
+            data.success ?? input.transportOptions?.shouldRedirect,
         },
       };
     });

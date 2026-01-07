@@ -44,8 +44,7 @@ function Signin() {
   const { isSubmitting } = form.formState;
 
   const { execute } = useServerAction(signinAction, {
-    onSuccess: ({ data }) => {
-      console.log(data);
+    onSuccess: () => {
       toast.success("Signup successful");
     },
     onError: ({ err }) => {

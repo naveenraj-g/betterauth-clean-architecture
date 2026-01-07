@@ -1,17 +1,22 @@
 import {
-  SignupResponseSchema,
-  TSignupResponse,
+  SignupResponseDtoSchema,
+  TSignupResponseDto,
   TSignupEmailSchema,
   TSigninEmailSchema,
-  TSigninResponse,
-  SigninResponseSchema,
+  TSigninResponseDto,
+  SigninResponseDtoSchema,
+  SignoutResponseDtoSchema,
+  TSignoutResponseDto,
 } from "@/modules/shared/entities/schema/auth/auth.schema";
 import { auth } from "../../../auth-provider/auth";
 import { IAuthService } from "../../domain/interfaces";
 import { mapBetterAuthError } from "@/modules/server/shared/errors/mappers/mapBetterAuthError";
+import { headers } from "next/headers";
 
 export class AuthService implements IAuthService {
-  async emailSignup(payload: TSignupEmailSchema): Promise<TSignupResponse> {
+  async signUpWithEmail(
+    payload: TSignupEmailSchema
+  ): Promise<TSignupResponseDto> {
     const { email, name, password } = payload;
 
     try {
@@ -24,13 +29,15 @@ export class AuthService implements IAuthService {
         },
       });
 
-      return await SignupResponseSchema.parseAsync(res);
+      return await SignupResponseDtoSchema.parseAsync(res);
     } catch (error) {
       mapBetterAuthError(error, "Failed to sign up user");
     }
   }
 
-  async emailSignin(payload: TSigninEmailSchema): Promise<TSigninResponse> {
+  async signInWithEmail(
+    payload: TSigninEmailSchema
+  ): Promise<TSigninResponseDto> {
     const { email, password, rememberMe } = payload;
 
     try {
@@ -43,9 +50,26 @@ export class AuthService implements IAuthService {
         },
       });
 
-      return await SigninResponseSchema.parseAsync(res);
+      return await SigninResponseDtoSchema.parseAsync(res);
     } catch (error) {
       mapBetterAuthError(error, "Failed to sign in user");
+    }
+  }
+
+  async signOut(): Promise<TSignoutResponseDto> {
+    try {
+      const res = await auth.api.signOut({
+        headers: await headers(),
+      });
+
+      const data = {
+        ...res,
+        url: res.success ? "/" : null,
+      };
+
+      return await SignoutResponseDtoSchema.parseAsync(data);
+    } catch (error) {
+      mapBetterAuthError(error, "Failed to sign out user");
     }
   }
 }

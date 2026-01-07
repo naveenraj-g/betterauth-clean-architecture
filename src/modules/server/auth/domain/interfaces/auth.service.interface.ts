@@ -1,11 +1,13 @@
 import {
-  TSignupResponse,
+  TSignupResponseDto,
   TSignupEmailSchema,
   TSigninEmailSchema,
-  TSigninResponse,
+  TSigninResponseDto,
+  TSignoutResponseDto,
 } from "@/modules/shared/entities/schema/auth/auth.schema";
 
 export interface IAuthService {
-  emailSignup(payload: TSignupEmailSchema): Promise<TSignupResponse>;
-  emailSignin(payload: TSigninEmailSchema): Promise<TSigninResponse>;
+  signUpWithEmail(payload: TSignupEmailSchema): Promise<TSignupResponseDto>;
+  signInWithEmail(payload: TSigninEmailSchema): Promise<TSigninResponseDto>;
+  signOut(): Promise<TSignoutResponseDto>;
 }
