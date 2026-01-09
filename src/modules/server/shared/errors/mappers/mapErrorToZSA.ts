@@ -9,8 +9,7 @@ import { ApplicationError } from "../applicationError";
 
 function isNextJsControlError(error: any) {
   return (
-    (error?.digest as string).includes("NEXT_REDIRECT") ||
-    (error?.digest as string).includes("NEXT_NOT_FOUND")
+    error?.message === "NEXT_REDIRECT" || error?.message === "NEXT_NOT_FOUND"
   );
 }
 
@@ -23,6 +22,7 @@ export function mapErrorToZSA(error: unknown): never {
   if (isNextJsControlError(error)) {
     throw error;
   }
+  console.log(error);
 
   /**
    * IMPORTANT:

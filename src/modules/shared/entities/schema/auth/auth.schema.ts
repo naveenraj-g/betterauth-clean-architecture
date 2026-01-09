@@ -6,6 +6,7 @@ export const BaseSigninOrSignupSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email(),
   password: z.string().min(1, "Password is required"),
+  rememberMe: z.boolean(),
 });
 
 export const UserSchema = z.object({
@@ -25,14 +26,14 @@ export const SignupFormSchema = BaseSigninOrSignupSchema.pick({
   name: true,
   email: true,
   password: true,
+  rememberMe: true,
 });
 export type TSignupFormSchema = z.infer<typeof SignupFormSchema>;
 
 export const SigninFormSchema = BaseSigninOrSignupSchema.pick({
   email: true,
   password: true,
-}).extend({
-  rememberMe: z.boolean().optional(),
+  rememberMe: true,
 });
 export type TSigninFormSchema = z.infer<typeof SigninFormSchema>;
 
@@ -43,14 +44,14 @@ export const SignupValidationSchema = BaseSigninOrSignupSchema.pick({
   name: true,
   email: true,
   password: true,
+  rememberMe: true,
 });
 export type TSignupValidationSchema = z.infer<typeof SignupValidationSchema>;
 
 export const SigninValidationSchema = BaseSigninOrSignupSchema.pick({
   email: true,
   password: true,
-}).extend({
-  rememberMe: z.boolean().optional(),
+  rememberMe: true,
 });
 export type TSigninValidationSchema = z.infer<typeof SigninValidationSchema>;
 
@@ -83,6 +84,7 @@ export const SignupEmailSchema = BaseSigninOrSignupSchema.pick({
   name: true,
   email: true,
   password: true,
+  rememberMe: true,
 });
 export type TSignupEmailSchema = z.infer<typeof SignupEmailSchema>;
 
