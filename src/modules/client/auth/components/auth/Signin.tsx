@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   SigninFormSchema,
   TSigninFormSchema,
-} from "@/modules/shared/entities/schema/auth/auth.schema";
+} from "@/modules/entities/schemas/auth";
 import {
   Field,
   FieldError,
@@ -28,16 +28,17 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { Eye, EyeOff, Key, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Eye, EyeOff, Key, Loader2, Mail } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useServerAction } from "zsa-react";
-import { signinAction } from "@/modules/server/auth/presentation/actions/auth.actions";
+import { signinAction } from "@/modules/server/presentation/actions/auth";
 import { toast } from "sonner";
 import { handleZSAError } from "@/modules/client/shared/error/handleZSAError";
 import Link from "next/link";
 import OauthButton from "./OauthButton";
 import AuthSeparator from "./AuthSeparator";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 function Signin() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -148,47 +149,58 @@ function Signin() {
                 )}
               />
 
-              <div className="space-y-2.5">
-                <Controller
-                  control={form.control}
-                  name="rememberMe"
-                  render={({ field, fieldState }) => (
-                    <Field>
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          id="rememberme"
-                          defaultChecked={field.value}
-                          onCheckedChange={(checked) => {
-                            field.onChange(checked);
-                          }}
-                        />
-                        <FieldLabel
-                          htmlFor="rememberme"
-                          className="font-normal text-sm"
-                        >
-                          Remember me
-                        </FieldLabel>
-                      </div>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
+              <div className="grid gap-4">
+                <div className="space-y-2.5">
+                  <Controller
+                    control={form.control}
+                    name="rememberMe"
+                    render={({ field, fieldState }) => (
+                      <Field>
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            id="rememberme"
+                            defaultChecked={field.value}
+                            onCheckedChange={(checked) => {
+                              field.onChange(checked);
+                            }}
+                          />
+                          <FieldLabel
+                            htmlFor="rememberme"
+                            className="font-normal text-sm"
+                          >
+                            Remember me
+                          </FieldLabel>
+                        </div>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="animate-spin" />
+                        Sign In
+                      </>
+                    ) : (
+                      "Sign In"
+                    )}
+                  </Button>
+                </div>
+                <Link
+                  href="/auth/magic-link"
+                  className={cn(
+                    buttonVariants({ variant: "secondary" }),
+                    "w-full"
                   )}
-                />
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full"
                 >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="animate-spin" />
-                      Sign In
-                    </>
-                  ) : (
-                    "Sign In"
-                  )}
-                </Button>
+                  <Mail /> Sign in with Magic Link
+                </Link>
               </div>
 
               <AuthSeparator />

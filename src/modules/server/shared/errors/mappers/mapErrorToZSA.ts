@@ -3,7 +3,7 @@
 import {
   InputParseError,
   OutputParseError,
-} from "@/modules/shared/entities/errors/schemaParseError";
+} from "@/modules/server/shared/errors/schemaParseError";
 import { ZSAError } from "zsa";
 import { ApplicationError } from "../applicationError";
 

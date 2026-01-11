@@ -1,6 +1,6 @@
 "use client";
 
-import { signoutAction } from "@/modules/server/auth/presentation/actions/auth.actions";
+import { signoutAction } from "@/modules/server/presentation/actions/auth";
 import { useServerAction } from "zsa-react";
 import { TSession } from "../../types/auth-types";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ function Home({ session }: { session: TSession | null }) {
           <>
             <div className="text-2xl">You are not logged in</div>
             <Button asChild size="lg">
-              <Link href="/auth/login">Sign In / Sign Up</Link>
+              <Link href="/auth/sign-in">Sign In / Sign Up</Link>
             </Button>
           </>
         )}

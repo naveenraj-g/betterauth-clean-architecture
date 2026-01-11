@@ -7,7 +7,6 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-
   session: {
     // NOTE: Caching the session for 1 min
     // IMPORTANT: Don't cache session for long time
@@ -16,11 +15,30 @@ export const auth = betterAuth({
       maxAge: 60, // 1 min
     },
   },
-
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      void sendEmail();
+    },
   },
-
+  emailVerification: {
+    autoSignInAfterVerification: true,
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      void sendEmail();
+    },
+  },
+  socialProviders: {
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    },
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+  },
   plugins: [
     // NOTE: This plugin make sure the application knows how to set cookies in next.js, it is required for server side operations with better-auth
     nextCookies(),

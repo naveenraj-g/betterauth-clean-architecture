@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 import { FieldValues, Path } from "react-hook-form";
-import { IHandleInputParseError, IZSAErrorPayload } from "./types";
+import { IHandleZSAError, IZSAErrorPayload } from "./types";
 
 export function parseZSAErrorData<T>(data: unknown): T | null {
   if (typeof data !== "string") return null;
@@ -14,7 +14,7 @@ export function parseZSAErrorData<T>(data: unknown): T | null {
 }
 
 export function handleZSAError<T extends FieldValues>(
-  params: IHandleInputParseError<T>
+  params: IHandleZSAError<T>
 ) {
   const { err, form, fallbackMessage } = params;
 

@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   SignupFormSchema,
   TSignupFormSchema,
-} from "@/modules/shared/entities/schema/auth/auth.schema";
+} from "@/modules/entities/schemas/auth";
 import {
   Field,
   FieldDescription,
@@ -30,15 +30,16 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Eye, EyeOff, Loader2, Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useServerAction } from "zsa-react";
-import { signupAction } from "@/modules/server/auth/presentation/actions/auth.actions";
+import { signupAction } from "@/modules/server/presentation/actions/auth";
 import { toast } from "sonner";
 import { handleZSAError } from "@/modules/client/shared/error/handleZSAError";
 import OauthButton from "./OauthButton";
 import Link from "next/link";
 import AuthSeparator from "./AuthSeparator";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 function Signup() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -200,9 +201,15 @@ function Signup() {
                       "Create an account"
                     )}
                   </Button>
-                  <Button variant="secondary">
-                    <Mail /> Sign in with Passkey
-                  </Button>
+                  <Link
+                    href="/auth/magic-link"
+                    className={cn(
+                      buttonVariants({ variant: "secondary" }),
+                      "w-full"
+                    )}
+                  >
+                    <Mail /> Sign in with Magic Link
+                  </Link>
                 </div>
               </div>
 

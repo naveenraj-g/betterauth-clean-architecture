@@ -1,7 +1,7 @@
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { ZSAError } from "zsa";
 
-export interface IHandleInputParseError<T extends FieldValues> {
+export interface IHandleZSAError<T extends FieldValues> {
   err: ZSAError;
   form?: UseFormReturn<T>;
   fallbackMessage?: string;
