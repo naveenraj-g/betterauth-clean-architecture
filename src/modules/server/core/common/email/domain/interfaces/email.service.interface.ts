@@ -1,5 +1,5 @@
-import { TSendEmailPayload } from "@/modules/shared/entities/types/email";
+import { TSendEmailPayload } from "@/modules/entities/types/email";
 
-export interface EmailService {
+export interface IEmailService {
   send(message: TSendEmailPayload): Promise<void>;
 }

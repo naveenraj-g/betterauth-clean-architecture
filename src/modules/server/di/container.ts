@@ -1,12 +1,13 @@
 import "reflect-metadata";
 import { Container } from "inversify";
 import { DI_RETURN_TYPES, DI_SYMBOLS } from "./types";
-import { AuthModule } from "./modules";
+import { AuthModule, EmailModule } from "./modules";
 
 const AppContainer = new Container({ defaultScope: "Singleton" });
 
 const initializeContainer = () => {
   AppContainer.load(AuthModule);
+  AppContainer.load(EmailModule);
 };
 
 initializeContainer();

@@ -1,28 +1,34 @@
 import nodemailer from "nodemailer";
-import { EmailService } from "../../domain/interfaces/email.service.interface";
-import { TSendEmailPayload } from "@/modules/shared/entities/types/email";
+import { IEmailService } from "../../domain/interfaces/email.service.interface";
+import { TSendEmailPayload } from "@/modules/entities/types/email";
+import { InfrastructureError } from "@/modules/server/shared/errors/infrastructureError";
 
-export class NodemailerEmailService implements EmailService {
+export class NodemailerEmailService implements IEmailService {
   private transporter;
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 587,
+      service: "gmail",
+      port: 587,
       secure: false,
       auth: {
-        user: process.env.SMTP_USER,
+        user: process.env.SMTP_EMAIL,
         pass: process.env.SMTP_PASS,
       },
     });
   }
 
   async send(message: TSendEmailPayload): Promise<void> {
-    await this.transporter.sendMail({
-      from: message.from ?? "noreply@example.com",
-      to: message.to,
-      subject: message.subject,
-      html: message.html,
-    });
+    try {
+      await this.transporter.sendMail({
+        from:
+          message.from ?? "betterauth-clean-architecture <gnvv2002@gmail.com>",
+        to: message.to,
+        subject: message.subject,
+        html: message.html,
+      });
+    } catch (error) {
+      throw new InfrastructureError("Fail to send email", error);
+    }
   }
 }
