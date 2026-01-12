@@ -28,7 +28,7 @@ export class NodemailerEmailService implements IEmailService {
         html: message.html,
       });
     } catch (error) {
-      throw new InfrastructureError("Fail to send email", error);
+      throw new InfrastructureError("Failed to send email", error);
     }
   }
 }
