@@ -1,25 +1,25 @@
-import { InputParseError } from "@/modules/server/shared/errors/schemaParseError";
+import { InputParseError } from "@/modules/server/shared/errors/schemaParseError"
 import {
   SigninWithSocialValidationSchema,
-  TSigninWithSocialResponse,
-} from "@/modules/entities/schemas/auth";
-import { signinWithSocialUseCase } from "../../../application/usecases/auth/signinWithSocial.usecase";
+  TSigninWithSocialResponseDtoSchema
+} from "@/modules/entities/schemas/auth"
+import { signinWithSocialUseCase } from "../../../application/usecases/auth/signinWithSocial.usecase"
 
-function presenter(data: TSigninWithSocialResponse) {
-  return data;
+function presenter(data: TSigninWithSocialResponseDtoSchema) {
+  return data
 }
 
-export type TSigninWithSocialControllerOutput = ReturnType<typeof presenter>;
+export type TSigninWithSocialControllerOutput = ReturnType<typeof presenter>
 
 export async function signinWithSocialController(
   input: any
 ): Promise<TSigninWithSocialControllerOutput> {
-  const parsed = await SigninWithSocialValidationSchema.safeParseAsync(input);
+  const parsed = await SigninWithSocialValidationSchema.safeParseAsync(input)
 
   if (!parsed.success) {
-    throw new InputParseError(parsed.error);
+    throw new InputParseError(parsed.error)
   }
 
-  const data = await signinWithSocialUseCase(parsed.data);
-  return presenter(data);
+  const data = await signinWithSocialUseCase(parsed.data)
+  return presenter(data)
 }

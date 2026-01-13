@@ -1,13 +1,13 @@
 import {
-  TSigninWithSocialResponse,
-  TSigninWithSocialValidationSchema,
-} from "@/modules/entities/schemas/auth";
-import { getInjection } from "@/modules/server/di/container";
+  TSigninWithSocialResponseDtoSchema,
+  TSigninWithSocialValidationSchema
+} from "@/modules/entities/schemas/auth"
+import { getInjection } from "@/modules/server/di/container"
 
 export async function signinWithSocialUseCase(
   payload: TSigninWithSocialValidationSchema
-): Promise<TSigninWithSocialResponse> {
-  const authService = getInjection("IAuthService");
-  const data = authService.signInWithSocial(payload);
-  return data;
+): Promise<TSigninWithSocialResponseDtoSchema> {
+  const authService = getInjection("IAuthService")
+  const data = authService.signInWithSocial(payload)
+  return data
 }

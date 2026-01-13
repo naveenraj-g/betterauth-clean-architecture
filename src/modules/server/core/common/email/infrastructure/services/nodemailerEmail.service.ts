@@ -1,10 +1,10 @@
-import nodemailer from "nodemailer";
-import { IEmailService } from "../../domain/interfaces/email.service.interface";
-import { TSendEmailPayload } from "@/modules/entities/types/email";
-import { InfrastructureError } from "@/modules/server/shared/errors/infrastructureError";
+import nodemailer from "nodemailer"
+import { IEmailService } from "../../domain/interfaces/email.service.interface"
+import { TSendEmailPayload } from "@/modules/entities/types/email"
+import { InfrastructureError } from "@/modules/server/shared/errors/infrastructureError"
 
 export class NodemailerEmailService implements IEmailService {
-  private transporter;
+  private transporter
 
   constructor() {
     this.transporter = nodemailer.createTransport({
@@ -13,9 +13,9 @@ export class NodemailerEmailService implements IEmailService {
       secure: false,
       auth: {
         user: process.env.SMTP_EMAIL,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+        pass: process.env.SMTP_PASS
+      }
+    })
   }
 
   async send(message: TSendEmailPayload): Promise<void> {
@@ -25,10 +25,10 @@ export class NodemailerEmailService implements IEmailService {
           message.from ?? "betterauth-clean-architecture <gnvv2002@gmail.com>",
         to: message.to,
         subject: message.subject,
-        html: message.html,
-      });
+        html: message.html
+      })
     } catch (error) {
-      throw new InfrastructureError("Failed to send email", error);
+      throw new InfrastructureError("Failed to send email", error)
     }
   }
 }

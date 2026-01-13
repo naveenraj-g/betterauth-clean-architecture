@@ -1,11 +1,16 @@
-import z from "zod";
+import z from "zod"
 
-export const sendEmailValidationSchema = z.object({
+// validation schemas (used in server actions and controllers)
+export const SendEmailValidationSchema = z.object({
   to: z.string().email(),
   subject: z.string(),
   html: z.string(),
-  from: z.string().email().optional(),
-});
+  from: z.string().email().optional()
+})
 export type TSendEmailValidationSchema = z.infer<
-  typeof sendEmailValidationSchema
->;
+  typeof SendEmailValidationSchema
+>
+
+// ------------------------------------------------------- //
+
+// Server Action Schema
