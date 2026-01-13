@@ -27,6 +27,7 @@ function EmailVerification({ email }: IEmailVerificationProps) {
       toast.success("Verification Email Sent!", {
         description: "Check your email to verify your account."
       })
+      restart()
     },
     onError({ err }) {
       handleZSAError({
@@ -37,8 +38,14 @@ function EmailVerification({ email }: IEmailVerificationProps) {
   })
 
   function handleResendEmail() {
+    if (!email) {
+      toast.warning(
+        "Something went wrong while resending the verification email. Please try again."
+      )
+      return
+    }
+
     execute({ payload: { email } })
-    restart()
   }
 
   return (
@@ -54,17 +61,19 @@ function EmailVerification({ email }: IEmailVerificationProps) {
         <Button
           variant="secondary"
           className="w-full"
-          disabled={seconds > 0 || isPending}
+          disabled={isPending || seconds > 0}
           onClick={handleResendEmail}
         >
-          {isPending && (
+          {isPending ? (
             <>
               <Loader2 className="animate-spin" />
+              Sending...
             </>
+          ) : seconds > 0 ? (
+            `Resend Email (${seconds})`
+          ) : (
+            "Resend Email"
           )}
-          {!isPending && seconds > 0
-            ? `Resend Email (${seconds})`
-            : "Resend Email"}
         </Button>
       </CardContent>
     </Card>
