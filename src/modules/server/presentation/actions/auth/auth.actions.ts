@@ -23,6 +23,7 @@ import {
   sendEmailVerificationController,
   TSendEmailVerificationControllerOutPut
 } from "@/modules/server/core/auth/interface-adapters/controllers/auth/sendEmailVerification.controller"
+import { isEmailVerificationEnabled } from "@/modules/server/auth-provider/auth-server"
 
 /**
  * Server action acting as a transport layer between client and server.
@@ -44,7 +45,9 @@ export const signupAction = createServerAction()
           shouldRedirect: true,
           url: data.user.emailVerified
             ? "/"
-            : `/auth/email-verification?email=${data.user.email}`
+            : isEmailVerificationEnabled
+              ? `/auth/email-verification?email=${data.user.email}`
+              : "/"
         }
       }
     })
